@@ -36,7 +36,7 @@ class AuthLinkView(View):
                 adapter.logout(request)
 
         adapter.use(authlink)
-        adapter.login(request, authlink.user)
+        adapter.login(request, authlink)
         return self.on_success(request, authlink)
 
     def on_expired(self, request, authlink):

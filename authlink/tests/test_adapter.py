@@ -146,7 +146,7 @@ class AdapterTestCase(TestCase):
         request.user = self.user
         engine = import_module(settings.SESSION_ENGINE)
         request.session = engine.SessionStore()
-        self.adapter.login(request, self.user)
+        self.adapter.login(request, self.authlink)
         self.assertIn('_auth_user_id', request.session.keys())
 
     def test_logout(self):

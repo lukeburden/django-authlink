@@ -51,7 +51,7 @@ class DefaultAuthLinkAdapter(object):
     def error(self, request, message):
         self.add_message(request, messages.ERROR, message)
 
-    def login(self, request, user):
+    def login(self, request, authlink):
         """
         Attempt to use the first authentication backend. Without
         specifying it here, no error will result but in subsequent
@@ -60,6 +60,7 @@ class DefaultAuthLinkAdapter(object):
 
         Todo: think this through, probably can be done better
         """
+        user = authlink.user
         if not hasattr(user, 'backend'):
             user.backend = settings.AUTHENTICATION_BACKENDS[0]
         login(request, user)
