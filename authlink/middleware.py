@@ -1,6 +1,7 @@
 from authlink.adapter import get_adapter
 
 from django.contrib.auth import BACKEND_SESSION_KEY
+from django.core.exceptions import ImproperlyConfigured
 
 
 adapter = get_adapter()
@@ -15,9 +16,9 @@ class AuthLinkWhitelistMiddleware(object):
     """
     def process_request(self, request):
         if not hasattr(request, 'session'):
-            raise RuntimeError(
+            raise ImproperlyConfigured(
                 'Please ensure you place AuthLinkWhitelistMiddleware ' \
-                'middleware after the session middlware.'
+                'middleware after your session middlware.'
             )
         backend = request.session.get(BACKEND_SESSION_KEY)
         if backend and backend == 'authlink.auth_backends.AuthLinkBackend':

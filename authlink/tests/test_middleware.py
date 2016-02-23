@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth import SESSION_KEY
 from django.contrib.auth import BACKEND_SESSION_KEY
+from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test import Client
@@ -96,3 +97,22 @@ class AuthLinkMiddlewareTestCase(TestCase):
             response.content,
             'That URL is not whitelisted for your authentication method.'
         )
+
+
+    @override_settings(
+        MIDDLEWARE_CLASSES = (
+            'authlink.middleware.AuthLinkWhitelistMiddleware',
+        ),
+    )
+    def test_middleware_after_session_middleware(self):
+        with self.assertRaises(ImproperlyConfigured) as ic:
+            response = self.client.get(
+                reverse('authlink_use', kwargs={'key': self.authlink.key}),
+                REMOTE_ADDR = self.ipaddress
+            )
+            self.assertEqual(response.status_code, 500)
+            self.assertEqual(
+                ic.exception.message,
+                'ImproperlyConfigured: Please ensure you place AuthLinkWhitelistMiddleware middleware after your session middlware.'
+            )
+

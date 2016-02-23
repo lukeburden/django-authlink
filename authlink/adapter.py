@@ -54,12 +54,8 @@ class DefaultAuthLinkAdapter(object):
 
     def login(self, request, authlink):
         """
-        Attempt to use the first authentication backend. Without
-        specifying it here, no error will result but in subsequent
-        requests no user will be returned from
-        django.contrib.auth.get_user().
-
-        Todo: think this through, probably can be done better
+        Mark the user session as having use AuthLinkBackend
+        such that future requests can act on this information.
         """
         user = authlink.user
         user.backend = 'authlink.auth_backends.AuthLinkBackend'
