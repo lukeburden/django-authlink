@@ -5,10 +5,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.http import HttpResponseForbidden
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from ipware.ip import get_real_ip
 from ipware.ip import get_ip
-
 import datetime
 import importlib
 import re
@@ -61,8 +62,7 @@ class DefaultAuthLinkAdapter(object):
         Todo: think this through, probably can be done better
         """
         user = authlink.user
-        if not hasattr(user, 'backend'):
-            user.backend = settings.AUTHENTICATION_BACKENDS[0]
+        user.backend = 'authlink.auth_backends.AuthLinkBackend'
         login(request, user)
 
     def logout(self, request):
@@ -94,6 +94,15 @@ class DefaultAuthLinkAdapter(object):
             if re.match(url_re, url):
                 return True
         return False
+
+    def get_whitelist_failure_response(self, request):
+        return HttpResponseForbidden(
+            _(
+                'That URL is not whitelisted for your ' \
+                'authentication method.'
+            )
+        )
+
 
 def get_adapter():
     class_path = getattr(settings, 'AUTHLINK_ADAPTER_CLASS', None)

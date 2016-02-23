@@ -3,6 +3,8 @@ from __future__ import absolute_import
 
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
+from django.contrib.auth import SESSION_KEY
+from django.contrib.auth import BACKEND_SESSION_KEY
 from django.conf import settings
 from django.test import TestCase
 from django.test import RequestFactory
@@ -147,7 +149,12 @@ class AdapterTestCase(TestCase):
         engine = import_module(settings.SESSION_ENGINE)
         request.session = engine.SessionStore()
         self.adapter.login(request, self.authlink)
-        self.assertIn('_auth_user_id', request.session.keys())
+        self.assertIn(SESSION_KEY, request.session.keys())
+        self.assertIn(BACKEND_SESSION_KEY, request.session.keys())
+        self.assertEqual(
+            request.session[BACKEND_SESSION_KEY],
+            'authlink.auth_backends.AuthLinkBackend'
+        )
 
     def test_logout(self):
         request = self.factory.get('/some/url')
@@ -155,7 +162,8 @@ class AdapterTestCase(TestCase):
         engine = import_module(settings.SESSION_ENGINE)
         request.session = engine.SessionStore()
         self.adapter.logout(request)
-        self.assertNotIn('_auth_user_id', request.session.keys())
+        self.assertNotIn(SESSION_KEY, request.session.keys())
+        self.assertNotIn(BACKEND_SESSION_KEY, request.session.keys())
 
     def test_use(self):
         self.assertFalse(self.authlink.used)

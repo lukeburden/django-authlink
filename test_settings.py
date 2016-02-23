@@ -27,6 +27,7 @@ ROOT_URLCONF = 'test_urls'
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
+    "authlink.auth_backends.AuthLinkBackend"
 )
 
 STATIC_ROOT = '/tmp/'  # Dummy
