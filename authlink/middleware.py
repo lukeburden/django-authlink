@@ -14,7 +14,10 @@ class AuthLinkWhitelistMiddleware(object):
     Note: if you want the user to be able to access everything
     then don't use this middleware!
     """
-    def process_request(self, request):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
         if not hasattr(request, 'session'):
             raise ImproperlyConfigured(
                 'Please ensure you place AuthLinkWhitelistMiddleware ' \
@@ -24,3 +27,5 @@ class AuthLinkWhitelistMiddleware(object):
         if backend and backend == 'authlink.auth_backends.AuthLinkBackend':
             if not adapter.in_url_whitelist(request.path):
                 return adapter.get_whitelist_failure_response(request)
+        return self.get_response(request)
+
