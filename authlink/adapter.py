@@ -24,9 +24,11 @@ class DefaultAuthLinkAdapter(object):
     """
 
     def create(self, **kwargs):
-        request = kwargs.pop('request')
+        request = kwargs.pop("request")
         if not request.user.is_authenticated():
-            raise RuntimeError("User not authenticated, cannot create AuthLink. Check for this in view.")
+            raise RuntimeError(
+                "User not authenticated, cannot create AuthLink. Check for this in view."
+            )
         authlink = AuthLink(**kwargs)
         authlink.user = request.user
         authlink.ipaddress = self.extract_ipaddress(request)
@@ -35,7 +37,9 @@ class DefaultAuthLinkAdapter(object):
         return authlink
 
     def calculate_expiry(self, created):
-        return created + datetime.timedelta(seconds=getattr(settings, 'AUTHLINK_TTL_SECONDS', 60))
+        return created + datetime.timedelta(
+            seconds=getattr(settings, "AUTHLINK_TTL_SECONDS", 60)
+        )
 
     def extract_ipaddress(self, request):
         ipaddress = get_real_ip(request)
@@ -58,7 +62,7 @@ class DefaultAuthLinkAdapter(object):
         such that future requests can act on this information.
         """
         user = authlink.user
-        user.backend = 'authlink.auth_backends.AuthLinkBackend'
+        user.backend = "authlink.auth_backends.AuthLinkBackend"
         login(request, user)
 
     def logout(self, request):
@@ -78,14 +82,12 @@ class DefaultAuthLinkAdapter(object):
         return self.extract_ipaddress(request) == authlink.ipaddress
 
     def get_full_url(self, authlink):
-        return getattr(
-            settings,
-            'AUTHLINK_URL_TEMPLATE',
-            '/authlink/{key}'
-        ).format(key=authlink.key)
+        return getattr(settings, "AUTHLINK_URL_TEMPLATE", "/authlink/{key}").format(
+            key=authlink.key
+        )
 
     def in_url_whitelist(self, url):
-        whitelist = getattr(settings, 'AUTHLINK_URL_WHITELIST', [])
+        whitelist = getattr(settings, "AUTHLINK_URL_WHITELIST", [])
         for url_re in whitelist:
             if re.match(url_re, url):
                 return True
@@ -93,16 +95,13 @@ class DefaultAuthLinkAdapter(object):
 
     def get_whitelist_failure_response(self, request):
         return HttpResponseForbidden(
-            _(
-                'That URL is not whitelisted for your ' \
-                'authentication method.'
-            )
+            _("That URL is not whitelisted for your " "authentication method.")
         )
 
 
 def get_adapter():
-    class_path = getattr(settings, 'AUTHLINK_ADAPTER_CLASS', None)
+    class_path = getattr(settings, "AUTHLINK_ADAPTER_CLASS", None)
     if class_path:
-        pkg, attr = class_path.rsplit('.', 1)
+        pkg, attr = class_path.rsplit(".", 1)
         return getattr(importlib.import_module(pkg), attr)()
     return DefaultAuthLinkAdapter()

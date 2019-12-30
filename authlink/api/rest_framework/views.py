@@ -39,7 +39,7 @@ class AuthLinkCreateView(CreateAPIView):
 
     """
 
-    allowed_methods = ('POST',)
+    allowed_methods = ("POST",)
     serializer_class = AuthLinkSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -48,5 +48,4 @@ class AuthLinkCreateView(CreateAPIView):
 
     def get_success_headers(self, data):
         """ Return the URL of our authenticated link """
-        return {'Location': get_adapter().get_full_url(self.authlink)}
-
+        return {"Location": get_adapter().get_full_url(self.authlink)}

@@ -14,12 +14,18 @@ class AuthenticatedView(View):
     """
     Simple view to use in tests
     """
+
     def get(self, request, *args, **kwargs):
-        return HttpResponse('Hello, World!')
+        return HttpResponse("Hello, World!")
 
 
-urlpatterns = patterns('',
-    url(r'^api/authlink/$', AuthLinkCreateView.as_view(), name='authlink_generate'),
-    url(r'^authlink/(?P<key>[\w]+)$', AuthLinkView.as_view(), name='authlink_use'),
-    url(r'^authenticatedview/$', login_required(AuthenticatedView.as_view()), name='authenticated_view')
+urlpatterns = patterns(
+    "",
+    url(r"^api/authlink/$", AuthLinkCreateView.as_view(), name="authlink_generate"),
+    url(r"^authlink/(?P<key>[\w]+)$", AuthLinkView.as_view(), name="authlink_use"),
+    url(
+        r"^authenticatedview/$",
+        login_required(AuthenticatedView.as_view()),
+        name="authenticated_view",
+    ),
 )
