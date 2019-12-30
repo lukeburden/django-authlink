@@ -18,7 +18,7 @@ class AuthLink(models.Model):
         editable = False,
         max_length = getattr(settings, 'AUTHLINK_KEY_LENGTH', 64)
     )
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     url = models.TextField()
     ipaddress = models.GenericIPAddressField()
     created = models.DateTimeField(default=get_timezone_now)
