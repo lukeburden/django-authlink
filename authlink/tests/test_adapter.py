@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+
 
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
@@ -149,8 +149,8 @@ class AdapterTestCase(TestCase):
         engine = import_module(settings.SESSION_ENGINE)
         request.session = engine.SessionStore()
         self.adapter.login(request, self.authlink)
-        self.assertIn(SESSION_KEY, request.session.keys())
-        self.assertIn(BACKEND_SESSION_KEY, request.session.keys())
+        self.assertIn(SESSION_KEY, list(request.session.keys()))
+        self.assertIn(BACKEND_SESSION_KEY, list(request.session.keys()))
         self.assertEqual(
             request.session[BACKEND_SESSION_KEY],
             'authlink.auth_backends.AuthLinkBackend'
@@ -162,8 +162,8 @@ class AdapterTestCase(TestCase):
         engine = import_module(settings.SESSION_ENGINE)
         request.session = engine.SessionStore()
         self.adapter.logout(request)
-        self.assertNotIn(SESSION_KEY, request.session.keys())
-        self.assertNotIn(BACKEND_SESSION_KEY, request.session.keys())
+        self.assertNotIn(SESSION_KEY, list(request.session.keys()))
+        self.assertNotIn(BACKEND_SESSION_KEY, list(request.session.keys()))
 
     def test_use(self):
         self.assertFalse(self.authlink.used)
