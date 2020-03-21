@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-
-
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
 from authlink.models import AuthLink

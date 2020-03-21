@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from django.contrib.auth import SESSION_KEY
@@ -51,7 +48,7 @@ class AdapterTestCase(TestCase):
         request = self.factory.get("/some/url")
         request.user = self.user
         request.META = {"REMOTE_ADDR": "177.139.233.133"}
-        self.assertTrue(request.user.is_authenticated())
+        self.assertTrue(request.user.is_authenticated)
         authlink = self.adapter.create(**{"url": "/some/url", "request": request})
         self.assertEqual(authlink.ipaddress, "177.139.233.133")
         self.assertEqual(authlink.user, self.user)
@@ -70,7 +67,7 @@ class AdapterTestCase(TestCase):
     def test_create_user_not_authenticated(self):
         request = self.factory.get("/some/url")
         request.user = self.user
-        request.user.is_authenticated = lambda: False
+        request.user.is_authenticated = False
         request.META = {"REMOTE_ADDR": "177.139.233.133"}
         with self.assertRaises(RuntimeError):
             authlink = self.adapter.create(**{"url": "/some/url", "request": request})

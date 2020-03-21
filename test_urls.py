@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.views.generic import View
@@ -19,8 +20,7 @@ class AuthenticatedView(View):
         return HttpResponse("Hello, World!")
 
 
-urlpatterns = patterns(
-    "",
+urlpatterns = [
     url(r"^api/authlink/$", AuthLinkCreateView.as_view(), name="authlink_generate"),
     url(r"^authlink/(?P<key>[\w]+)$", AuthLinkView.as_view(), name="authlink_use"),
     url(
@@ -28,4 +28,4 @@ urlpatterns = patterns(
         login_required(AuthenticatedView.as_view()),
         name="authenticated_view",
     ),
-)
+]

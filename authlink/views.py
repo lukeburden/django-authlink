@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from django.db import transaction
 from django.conf import settings
 from django.http import HttpResponseRedirect

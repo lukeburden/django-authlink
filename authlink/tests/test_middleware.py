@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import SESSION_KEY
 from django.contrib.auth import BACKEND_SESSION_KEY
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 from django.test import Client
 from django.test.utils import override_settings
@@ -53,7 +53,7 @@ class AuthLinkMiddlewareTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @override_settings(
-        MIDDLEWARE_CLASSES=settings.MIDDLEWARE_CLASSES
+        MIDDLEWARE=settings.MIDDLEWARE
         + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
         AUTHLINK_URL_WHITELIST=(r"/authenticatedview/",),
     )
@@ -69,7 +69,7 @@ class AuthLinkMiddlewareTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @override_settings(
-        MIDDLEWARE_CLASSES=settings.MIDDLEWARE_CLASSES
+        MIDDLEWARE=settings.MIDDLEWARE
         + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
         AUTHLINK_URL_WHITELIST=[],
     )
@@ -89,7 +89,7 @@ class AuthLinkMiddlewareTestCase(TestCase):
         )
 
     @override_settings(
-        MIDDLEWARE_CLASSES=("authlink.middleware.AuthLinkWhitelistMiddleware",)
+        MIDDLEWARE=("authlink.middleware.AuthLinkWhitelistMiddleware",)
     )
     def test_middleware_after_session_middleware(self):
         with self.assertRaises(ImproperlyConfigured) as ic:

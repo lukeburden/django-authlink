@@ -20,6 +20,7 @@ INSTALLED_APPS = (
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "django.contrib.messages",
     "authlink",
 )
 
@@ -38,7 +39,7 @@ AUTHLINK_TTL_SECONDS = 60
 TIME_ZONE = "UTC"
 USE_TZ = True
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",

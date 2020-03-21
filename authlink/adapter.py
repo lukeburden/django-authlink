@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
@@ -25,7 +22,7 @@ class DefaultAuthLinkAdapter(object):
 
     def create(self, **kwargs):
         request = kwargs.pop("request")
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             raise RuntimeError(
                 "User not authenticated, cannot create AuthLink. Check for this in view."
             )
