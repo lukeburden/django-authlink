@@ -1,18 +1,27 @@
+import os
+import sys
+
 import django
+
+# allow tests to find the `authlink` dir
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..' )
+
 
 SECRET_KEY = "sosecreteh"
 SITE_ID = 1
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
-        "USER": "",
+        "ENGINE": os.environ.get(
+            "CONSTANTS_DATABASE_ENGINE", "django.db.backends.sqlite3"
+        ),
+        "HOST": os.environ.get("CONSTANTS_DATABASE_HOST", "127.0.0.1"),
+        "NAME": os.environ.get("CONSTANTS_DATABASE_NAME", ":memory:"),
+        "USER": os.environ.get("CONSTANTS_DATABASE_USER", ""),
         "PASSWORD": "",
-        "HOST": "",
-        "PORT": "",
     }
 }
+
 
 INSTALLED_APPS = (
     "django.contrib.auth",
@@ -22,7 +31,7 @@ INSTALLED_APPS = (
     "authlink",
 )
 
-ROOT_URLCONF = "tests.urls"
+ROOT_URLCONF = "urls"
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
