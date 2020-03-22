@@ -16,7 +16,7 @@ import datetime
 
 
 TEST_URL = "/very/specific/url/"
-NON_SUCCESS_URL = "http://testserver/"
+NON_SUCCESS_URL = "/"
 
 
 @mock_now

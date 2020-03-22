@@ -84,7 +84,7 @@ class AuthLinkMiddlewareTestCase(TestCase):
         response = self.client.get(reverse("authenticated_view"))
         self.assertEqual(response.status_code, 403)
         self.assertEqual(
-            response.content,
+            response.content.decode("utf-8"),
             "That URL is not whitelisted for your authentication method.",
         )
 

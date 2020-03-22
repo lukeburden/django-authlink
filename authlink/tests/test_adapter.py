@@ -2,6 +2,7 @@ from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from django.contrib.auth import SESSION_KEY
 from django.contrib.auth import BACKEND_SESSION_KEY
+from django.contrib.auth.models import AnonymousUser
 from django.conf import settings
 from django.test import TestCase
 from django.test import RequestFactory
@@ -67,7 +68,7 @@ class AdapterTestCase(TestCase):
     def test_create_user_not_authenticated(self):
         request = self.factory.get("/some/url")
         request.user = self.user
-        request.user.is_authenticated = False
+        request.user = AnonymousUser()
         request.META = {"REMOTE_ADDR": "177.139.233.133"}
         with self.assertRaises(RuntimeError):
             authlink = self.adapter.create(**{"url": "/some/url", "request": request})
