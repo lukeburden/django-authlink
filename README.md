@@ -67,24 +67,39 @@ Location: https://authlink/k6s1fhv3a6e99liamatxqrn1m6nynn1krbtzw47wxckhyiahwohp4
 }
 ```
 
-To load the authenticated webview, your mobile app can now open it's particular webview class using the `Location` in the response above, and if the token is valid the target URL will load authenticated.
+To load the authenticated webview, your mobile app can now open its particular webview class using the `Location` in the response above, and if the token is valid the target URL will load authenticated.
 
 ### Security ###
 When you share an authlink, you are essentially providing unfettered authenticated access to a user's account. `django-authlink` attempts to reduce the chances of having one of these links somehow fall into the hands of an attacker and give them access to another user's account using several measures.
 
-1: A tight expiry window; by default authlinks are only valid for 60 seconds. You can reduce this to further close the window of validity and so vulnerability.
-2: Whitelisting of URLs; you need to specify what web-app URLs you want to allow authlinks to be created for. Note that once the user is authenticated, they can browse around, so this is not going to actually limit them to that URL.
-3: Matching of IP addresses; the IP address used when creating the authlink via the API must match the IP address of the request to use the authlink in the web application.
+1. A tight expiry window; by default authlinks are only valid for 60 seconds. You can reduce this to further close the window of validity and so vulnerability.
+2. Whitelisting of URLs; you need to specify what web-app URLs you want to allow authlinks to be created for. Note that once the user is authenticated, they can browse around, so this is not going to actually limit them to that URL.
+3. Matching of IP addresses; the IP address used when creating the authlink via the API must match the IP address of the request to use the authlink in the web application.
 
 Depsite these measures, there is still an undeniable security risk to using this authentication method. You need to weigh the pros and cons for your particular use case and make your own decision there whether this makes sense for your project.
 
 
 ### Configuration ###
 
-*AUTHLINK_URL_TEMPLATE* - default: "/authlink/{key}" - allows variation of the redirect URLs that the authlink create API produces.
-*AUTHLINK_URL_WHITELIST* - default: [] - a list of URL names that you want to restrict authlinks being created for.
-*AUTHLINK_ADAPTER_CLASS* - default: `authlink.adapter.DefaultAuthLinkAdapter` - you can subclass the adapter and add any customisations you want to general authlink behaviour.
-*AUTHLINK_TTL_SECONDS* - default: 60 - you can increase or reduce the period of validity for an authlink using this setting
+#### AUTHLINK_URL_TEMPLATE ####
+Default: "/authlink/{key}"
+
+Allows variation of the redirect URLs that the authlink create API produces.
+
+#### AUTHLINK_URL_WHITELIST ####
+Default: []
+
+A list of URL names that you want to restrict authlinks being created for.
+
+#### AUTHLINK_ADAPTER_CLASS ####
+Default: "authlink.adapter.DefaultAuthLinkAdapter"
+
+You can subclass the adapter and add any customisations you want to general authlink behaviour.
+
+#### AUTHLINK_TTL_SECONDS ####
+Default: 60
+
+Allows increasing or decreasing the period of validity for an authlink.
 
 
 ### Contribute
