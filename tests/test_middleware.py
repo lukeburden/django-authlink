@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth import SESSION_KEY
@@ -13,7 +10,7 @@ from django.test.utils import override_settings
 from django.utils import timezone
 
 from .utils import mock_now
-from ..models import AuthLink
+from authlink.models import AuthLink
 
 import datetime
 

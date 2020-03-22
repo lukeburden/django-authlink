@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import django
 
 SECRET_KEY = "sosecreteh"
@@ -24,7 +22,7 @@ INSTALLED_APPS = (
     "authlink",
 )
 
-ROOT_URLCONF = "test_urls"
+ROOT_URLCONF = "tests.urls"
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
@@ -44,3 +42,4 @@ MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 )
+

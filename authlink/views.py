@@ -1,13 +1,12 @@
-from django.db import transaction
 from django.conf import settings
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 
-from .models import AuthLink
 from .adapter import get_adapter
+from .models import AuthLink
 
 
 class AuthLinkView(View):

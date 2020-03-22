@@ -1,15 +1,15 @@
-from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth import logout
-from django.http import HttpResponseForbidden
-from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
-from ipware.ip import get_real_ip
-from ipware.ip import get_ip
 import datetime
 import importlib
 import re
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.http import HttpResponseForbidden
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
+
+from ipware.ip import get_ip, get_real_ip
 
 from .models import AuthLink
 

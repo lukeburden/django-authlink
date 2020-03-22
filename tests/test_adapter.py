@@ -11,7 +11,8 @@ from django.utils import timezone
 from authlink.adapter import get_adapter
 from authlink.adapter import DefaultAuthLinkAdapter
 from authlink.models import AuthLink
-from authlink.tests.utils import mock_now
+
+from .utils import mock_now
 
 import datetime
 from importlib import import_module
@@ -40,7 +41,7 @@ class AdapterTestCase(TestCase):
     def test_get_adapter(self):
         self.assertEqual(DefaultAuthLinkAdapter, self.adapter.__class__)
 
-    @override_settings(AUTHLINK_ADAPTER_CLASS="authlink.tests.test_adapter.TestAdapter")
+    @override_settings(AUTHLINK_ADAPTER_CLASS="tests.test_adapter.TestAdapter")
     def test_get_adapter_configurable(self):
         adapter = get_adapter()
         self.assertEqual(TestAdapter, adapter.__class__)

@@ -1,8 +1,8 @@
+import string
+
 from django.conf import settings
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-
-import string
 
 
 # we use this so we can easily mock timezone.now() on model fields

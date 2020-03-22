@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 
 from django.conf import settings
@@ -10,7 +9,7 @@ from django.test import Client
 from django.utils import timezone
 
 from .utils import mock_now
-from ..models import AuthLink
+from authlink.models import AuthLink
 
 import datetime
 

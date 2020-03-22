@@ -1,8 +1,7 @@
-from authlink.adapter import get_adapter
-
 from django.contrib.auth import BACKEND_SESSION_KEY
 from django.core.exceptions import ImproperlyConfigured
 
+from authlink.adapter import get_adapter
 
 adapter = get_adapter()
 

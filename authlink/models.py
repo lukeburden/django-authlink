@@ -1,8 +1,7 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
-from .utils import get_timezone_now
-from .utils import generate_authlink_key
+from .utils import generate_authlink_key, get_timezone_now
 
 
 class AuthLink(models.Model):
