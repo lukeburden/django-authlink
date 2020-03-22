@@ -15,13 +15,6 @@ install_requires = [
     "djangorestframework>=3",
 ]
 
-# tests_require = [
-#     "pytest>=4,<5",
-#     "pytest-django>=3,<4",
-#     "pytest-mock>=1,<2",
-#     "model_mommy>=1,<2"
-# ]
-
 setup(
     name=name,
     author=author,
@@ -29,7 +22,7 @@ setup(
     description=description,
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version="2.0.1",
+    version="1.0.0",
     license="MIT",
     url=url,
     packages=find_packages(exclude=["tests",]),
@@ -44,7 +37,5 @@ setup(
         "Framework :: Django",
     ],
     install_requires=install_requires,
-    # test_suite="runtests.runtests",
-    # tests_require=tests_require,
     zip_safe=False,
 )
