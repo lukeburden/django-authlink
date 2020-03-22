@@ -1,16 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-
-from django.db import transaction
 from django.conf import settings
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 
-from .models import AuthLink
 from .adapter import get_adapter
+from .models import AuthLink
 
 
 class AuthLinkView(View):
@@ -18,6 +14,7 @@ class AuthLinkView(View):
     An endpoint that can be used to consume an
     authenticated link.
     """
+
     @transaction.atomic
     def get(self, request, key):
         authlink = get_object_or_404(AuthLink, key=key)
@@ -27,7 +24,7 @@ class AuthLinkView(View):
 
         if adapter.is_used(authlink):
             return self.on_used(request, authlink)
-        
+
         if not adapter.ipaddress_matches(request, authlink):
             return self.on_address_mismatch(request, authlink)
 
@@ -40,24 +37,23 @@ class AuthLinkView(View):
         return self.on_success(request, authlink)
 
     def on_expired(self, request, authlink):
-        get_adapter().error(request, _('Link has expired.'))
+        get_adapter().error(request, _("Link has expired."))
         return self.on_non_success(request, authlink)
 
     def on_used(self, request, authlink):
-        get_adapter().error(request, _('Link has already been used.'))
+        get_adapter().error(request, _("Link has already been used."))
         return self.on_non_success(request, authlink)
 
     def on_address_mismatch(self, request, authlink):
         get_adapter().error(
             request,
-            _('Mismatch between generation IP address and consumption IP address.')
+            _("Mismatch between generation IP address and consumption IP address."),
         )
         return self.on_non_success(request, authlink)
 
     def on_non_success(self, request, authlink):
         return HttpResponseRedirect(
-            getattr(settings, 'AUTHLINK_NON_SUCCESS_REDIRECT_URL', '/'),
-            status = 301
+            getattr(settings, "AUTHLINK_NON_SUCCESS_REDIRECT_URL", "/"), status=301
         )
 
     def on_success(self, request, authlink):

@@ -1,10 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from rest_framework import status
 
 from ...adapter import get_adapter
 from .serializers import AuthLinkSerializer
@@ -22,7 +17,7 @@ class AuthLinkCreateView(CreateAPIView):
         {
             "url": "/some/whitelisted/path?q=s"
         }
-        
+
     # Response #
 
         HTTP 201 Created
@@ -34,12 +29,14 @@ class AuthLinkCreateView(CreateAPIView):
 
     # Server Configuration Hints #
 
-    * whitelisted URLs must be provided in setting `AUTHLINK_URL_WHITELIST`. Default is an empty list.
-    * you should set `AUTHLINK_URL_TEMPLATE` such that the `Location` header links directly to the authlink consumption endpoint. The template should contain `{key}`. 
-
+    * whitelisted URLs must be provided in setting `AUTHLINK_URL_WHITELIST`.
+    Default is an empty list.
+    * you should set `AUTHLINK_URL_TEMPLATE` such that the `Location` header
+    links directly to the authlink consumption endpoint. The template should
+    contain `{key}`.
     """
 
-    allowed_methods = ('POST',)
+    allowed_methods = ("POST",)
     serializer_class = AuthLinkSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -47,6 +44,5 @@ class AuthLinkCreateView(CreateAPIView):
         self.authlink = serializer.save(self.request)
 
     def get_success_headers(self, data):
-        """ Return the URL of our authenticated link """
-        return {'Location': get_adapter().get_full_url(self.authlink)}
-
+        """Return the URL of our authenticated link."""
+        return {"Location": get_adapter().get_full_url(self.authlink)}
