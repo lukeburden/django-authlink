@@ -17,7 +17,7 @@ class APITestCase(TestCase):
         self.user = get_user_model().objects.create_user(
             username="luke", email="luke@...", password="top_secret"
         )
-        self.ipaddress = "201.021.121.1"
+        self.ipaddress = "201.21.121.1"
 
     def test_generate_ok_url(self):
         self.assertEqual(AuthLink.objects.count(), 0)

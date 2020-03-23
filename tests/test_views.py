@@ -30,7 +30,7 @@ class AuthLinkViewTestCase(TestCase):
         self.user = get_user_model().objects.create_user(
             username="luke", email="luke@...", password="top_secret"
         )
-        self.ipaddress = "201.021.121.1"
+        self.ipaddress = "201.21.121.1"
         now = timezone.now()
         self.authlink = AuthLink.objects.create(
             user=self.user,
@@ -109,7 +109,7 @@ class AuthLinkViewTestCase(TestCase):
     def test_use_mismatched_ipaddresses(self):
         response = self.client.get(
             reverse("authlink_use", kwargs={"key": self.authlink.key}),
-            REMOTE_ADDR="201.021.121.2",
+            REMOTE_ADDR="201.21.121.2",
         )
         self.assertEqual(response.status_code, 301)
         self.assertEqual(NON_SUCCESS_URL, response.get("Location"))

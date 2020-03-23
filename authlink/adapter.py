@@ -1,5 +1,6 @@
 import datetime
 import importlib
+import ipaddress
 import re
 
 from django.conf import settings
@@ -76,7 +77,12 @@ class DefaultAuthLinkAdapter(object):
         return authlink.used
 
     def ipaddress_matches(self, request, authlink):
-        return self.extract_ipaddress(request) == authlink.ipaddress
+        # leverage python standard lib to properly compare the two addresses as
+        # string comparison can be unreliable
+        request_ip = self.extract_ipaddress(request)
+        request_ip = ipaddress.ip_address(request_ip) if request_ip else request_ip
+        expected_ip = ipaddress.ip_address(authlink.ipaddress)
+        return request_ip == expected_ip
 
     def get_full_url(self, authlink):
         return getattr(settings, "AUTHLINK_URL_TEMPLATE", "/authlink/{key}").format(

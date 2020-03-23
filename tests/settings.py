@@ -13,11 +13,11 @@ SITE_ID = 1
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get(
-            "CONSTANTS_DATABASE_ENGINE", "django.db.backends.sqlite3"
+            "CONSTANTS_DATABASE_ENGINE", "django.db.backends.postgresql"
         ),
         "HOST": os.environ.get("CONSTANTS_DATABASE_HOST", "127.0.0.1"),
-        "NAME": os.environ.get("CONSTANTS_DATABASE_NAME", ":memory:"),
-        "USER": os.environ.get("CONSTANTS_DATABASE_USER", ""),
+        "NAME": os.environ.get("CONSTANTS_DATABASE_NAME", "authlink"),
+        "USER": os.environ.get("CONSTANTS_DATABASE_USER", "postgres"),
         "PASSWORD": "",
     }
 }
