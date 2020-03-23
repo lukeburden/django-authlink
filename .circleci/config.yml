@@ -1,17 +1,7 @@
 version: 2.0
 
 common: &common
-  environment:
-    - AUTHLINK_DATABASE_ENGINE=django.db.backends.postgresql
-    - AUTHLINK_DATABASE_NAME=postgres
-    - AUTHLINK_DATABASE_HOST=localhost
-    - AUTHLINK_DATABASE_USER=postgres
   working_directory: ~/repo
-  docker:
-    - image: circleci/postgres:11-alpine-ram
-    - environment:
-      - POSTGRES_USER: postgres
-      - POSTGRES_DB: postgres
   steps:
     - checkout
     - restore_cache:
