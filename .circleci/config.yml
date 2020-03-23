@@ -1,7 +1,17 @@
 version: 2.0
 
 common: &common
+  environment:
+    - AUTHLINK_DATABASE_ENGINE=django.db.backends.postgresql
+    - AUTHLINK_DATABASE_NAME=postgres
+    - AUTHLINK_DATABASE_HOST=localhost
+    - AUTHLINK_DATABASE_USER=postgres
   working_directory: ~/repo
+  docker:
+    - image: circleci/postgres:11-alpine-ram
+    - environment:
+      - POSTGRES_USER: postgres
+      - POSTGRES_DB: postgres
   steps:
     - checkout
     - restore_cache:
@@ -41,55 +51,55 @@ jobs:
     docker:
       - image: circleci/python:3.6
         environment:
-          TOXENV=py36-dj22
+          - TOXENV=py36-dj22
   py36dj30:
     <<: *common
     docker:
       - image: circleci/python:3.6
         environment:
-          TOXENV=py36-dj30
+          - TOXENV=py36-dj30
   py36djmaster:
     <<: *common
     docker:
       - image: circleci/python:3.6
         environment:
-          TOXENV=py36-djmaster
+          - TOXENV=py36-djmaster
   py37dj22:
     <<: *common
     docker:
       - image: circleci/python:3.7
         environment:
-          TOXENV=py37-dj22
+          - TOXENV=py37-dj22
   py37dj30:
     <<: *common
     docker:
       - image: circleci/python:3.7
         environment:
-          TOXENV=py37-dj30
+          - TOXENV=py37-dj30
   py37djmaster:
     <<: *common
     docker:
       - image: circleci/python:3.7
         environment:
-          TOXENV=py37-djmaster
+          - TOXENV=py37-djmaster
   py38dj22:
     <<: *common
     docker:
       - image: circleci/python:3.8
         environment:
-          TOXENV=py38-dj22
+          - TOXENV=py38-dj22
   py38dj30:
     <<: *common
     docker:
       - image: circleci/python:3.8
         environment:
-          TOXENV=py38-dj30
+          - TOXENV=py38-dj30
   py38djmaster:
     <<: *common
     docker:
       - image: circleci/python:3.8
         environment:
-          TOXENV=py38-djmaster
+          - TOXENV=py38-djmaster
 
 workflows:
   version: 2
