@@ -1,21 +1,18 @@
-from django.db import IntegrityError
-from django.contrib.auth import get_user_model
-from django.contrib.auth import SESSION_KEY
-from django.contrib.auth import BACKEND_SESSION_KEY
-from django.contrib.auth.models import AnonymousUser
+import datetime
+from importlib import import_module
+
 from django.conf import settings
-from django.test import TestCase
-from django.test import RequestFactory
+from django.contrib.auth import BACKEND_SESSION_KEY, SESSION_KEY, get_user_model
+from django.contrib.auth.models import AnonymousUser
+from django.db import IntegrityError
+from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
 from django.utils import timezone
-from authlink.adapter import get_adapter
-from authlink.adapter import DefaultAuthLinkAdapter
+
+from authlink.adapter import DefaultAuthLinkAdapter, get_adapter
 from authlink.models import AuthLink
 
 from .utils import mock_now
-
-import datetime
-from importlib import import_module
 
 
 class TestAdapter(DefaultAuthLinkAdapter):
@@ -56,15 +53,14 @@ class AdapterTestCase(TestCase):
         self.assertEqual(authlink.user, self.user)
         self.assertEqual(
             authlink.expires,
-            authlink.created
-            + datetime.timedelta(seconds=settings.AUTHLINK_TTL_SECONDS),
+            authlink.created + datetime.timedelta(seconds=settings.AUTHLINK_TTL_SECONDS),
         )
 
     def test_create_ipaddress_missing(self):
         request = self.factory.get("/some/url")
         request.user = self.user
         with self.assertRaises(IntegrityError):
-            authlink = self.adapter.create(**{"url": "/some/url", "request": request})
+            self.adapter.create(**{"url": "/some/url", "request": request})
 
     def test_create_user_not_authenticated(self):
         request = self.factory.get("/some/url")
@@ -72,14 +68,12 @@ class AdapterTestCase(TestCase):
         request.user = AnonymousUser()
         request.META = {"REMOTE_ADDR": "177.139.233.133"}
         with self.assertRaises(RuntimeError):
-            authlink = self.adapter.create(**{"url": "/some/url", "request": request})
+            self.adapter.create(**{"url": "/some/url", "request": request})
 
     def test_calculate_expiry(self):
         now = timezone.now()
         expires = self.adapter.calculate_expiry(now)
-        self.assertEqual(
-            expires, now + datetime.timedelta(seconds=settings.AUTHLINK_TTL_SECONDS)
-        )
+        self.assertEqual(expires, now + datetime.timedelta(seconds=settings.AUTHLINK_TTL_SECONDS))
 
     @override_settings(AUTHLINK_TTL_SECONDS=62)
     @mock_now
@@ -188,9 +182,7 @@ class AdapterTestCase(TestCase):
 
     @override_settings(AUTHLINK_URL_TEMPLATE="/some/url/{key}")
     def test_get_full_url_configurable(self):
-        self.assertIn(
-            "/some/url/%s" % self.authlink.key, self.adapter.get_full_url(self.authlink)
-        )
+        self.assertIn(f"/some/url/{self.authlink.key}", self.adapter.get_full_url(self.authlink))
 
     def test_in_url_whitelist_default_deny(self):
         self.assertFalse(self.adapter.in_url_whitelist("/nothing/will/work"))

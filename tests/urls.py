@@ -1,7 +1,6 @@
-from django.conf.urls import url
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.urls import re_path
 from django.views.generic import View
 
 from authlink.api.rest_framework.views import AuthLinkCreateView
@@ -18,9 +17,9 @@ class AuthenticatedView(View):
 
 
 urlpatterns = [
-    url(r"^api/authlink/$", AuthLinkCreateView.as_view(), name="authlink_generate"),
-    url(r"^authlink/(?P<key>[\w]+)$", AuthLinkView.as_view(), name="authlink_use"),
-    url(
+    re_path(r"^api/authlink/$", AuthLinkCreateView.as_view(), name="authlink_generate"),
+    re_path(r"^authlink/(?P<key>[\w]+)$", AuthLinkView.as_view(), name="authlink_use"),
+    re_path(
         r"^authenticatedview/$",
         login_required(AuthenticatedView.as_view()),
         name="authenticated_view",

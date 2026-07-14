@@ -1,17 +1,14 @@
-
+import datetime
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth import SESSION_KEY
+from django.contrib.auth import SESSION_KEY, get_user_model
+from django.test import Client, TestCase
 from django.urls import reverse
-from django.test import TestCase
-from django.test import Client
 from django.utils import timezone
 
-from .utils import mock_now
 from authlink.models import AuthLink
 
-import datetime
+from .utils import mock_now
 
 
 TEST_URL = "/very/specific/url/"

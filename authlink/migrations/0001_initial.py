@@ -5,7 +5,6 @@ import authlink.utils
 
 
 class Migration(migrations.Migration):
-
     dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
@@ -32,9 +31,7 @@ class Migration(migrations.Migration):
                 ("used", models.DateTimeField(null=True, blank=True)),
                 (
                     "user",
-                    models.ForeignKey(
-                        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE
-                    ),
+                    models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
                 ),
             ],
         )

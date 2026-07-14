@@ -1,18 +1,16 @@
+import datetime
+
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth import SESSION_KEY
-from django.contrib.auth import BACKEND_SESSION_KEY
+from django.contrib.auth import SESSION_KEY, get_user_model
 from django.core.exceptions import ImproperlyConfigured
-from django.urls import reverse
-from django.test import TestCase
-from django.test import Client
+from django.test import Client, TestCase
 from django.test.utils import override_settings
+from django.urls import reverse
 from django.utils import timezone
 
-from .utils import mock_now
 from authlink.models import AuthLink
 
-import datetime
+from .utils import mock_now
 
 
 TEST_URL = "/very/specific/url/"
@@ -50,8 +48,7 @@ class AuthLinkMiddlewareTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @override_settings(
-        MIDDLEWARE=settings.MIDDLEWARE
-        + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
+        MIDDLEWARE=settings.MIDDLEWARE + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
         AUTHLINK_URL_WHITELIST=(r"/authenticatedview/",),
     )
     def test_middleware_active_url_whitelisted(self):
@@ -66,8 +63,7 @@ class AuthLinkMiddlewareTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @override_settings(
-        MIDDLEWARE=settings.MIDDLEWARE
-        + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
+        MIDDLEWARE=settings.MIDDLEWARE + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
         AUTHLINK_URL_WHITELIST=[],
     )
     def test_middleware_active_url_not_whitelisted(self):
@@ -85,9 +81,7 @@ class AuthLinkMiddlewareTestCase(TestCase):
             "That URL is not whitelisted for your authentication method.",
         )
 
-    @override_settings(
-        MIDDLEWARE=("authlink.middleware.AuthLinkWhitelistMiddleware",)
-    )
+    @override_settings(MIDDLEWARE=("authlink.middleware.AuthLinkWhitelistMiddleware",))
     def test_middleware_after_session_middleware(self):
         with self.assertRaises(ImproperlyConfigured) as ic:
             response = self.client.get(

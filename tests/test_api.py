@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
-from django.urls import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
-from authlink.models import AuthLink
+from django.urls import reverse
+
 from rest_framework.test import APIClient
+
+from authlink.models import AuthLink
 
 
 @override_settings(AUTHLINK_URL_WHITELIST=[r"^/very/specific/url/$"])
