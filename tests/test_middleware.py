@@ -81,6 +81,20 @@ class AuthLinkMiddlewareTestCase(TestCase):
             "That URL is not whitelisted for your authentication method.",
         )
 
+    @override_settings(
+        MIDDLEWARE=settings.MIDDLEWARE + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
+        AUTHLINK_URL_WHITELIST=[],
+    )
+    def test_middleware_ignores_password_sessions(self):
+        """
+        The middleware must only confine sessions established via an
+        authlink; ordinary password logins roam free even when nothing
+        is whitelisted.
+        """
+        self.client.login(username="luke", password="top_secret")
+        response = self.client.get(reverse("authenticated_view"))
+        self.assertEqual(response.status_code, 200)
+
     @override_settings(MIDDLEWARE=("authlink.middleware.AuthLinkWhitelistMiddleware",))
     def test_middleware_after_session_middleware(self):
         with self.assertRaises(ImproperlyConfigured) as ic:

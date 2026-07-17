@@ -3,6 +3,7 @@ import datetime
 from django.conf import settings
 from django.contrib.auth import SESSION_KEY, get_user_model
 from django.test import Client, TestCase
+from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -110,4 +111,24 @@ class AuthLinkViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 301)
         self.assertEqual(NON_SUCCESS_URL, response.get("Location"))
+        self.assertNotIn(SESSION_KEY, self.client.session)
+
+    def test_use_unknown_key(self):
+        response = self.client.get(
+            reverse("authlink_use", kwargs={"key": "notarealkey"}),
+            REMOTE_ADDR=self.ipaddress,
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertNotIn(SESSION_KEY, self.client.session)
+
+    @override_settings(AUTHLINK_NON_SUCCESS_REDIRECT_URL="/custom/failure/")
+    def test_use_non_success_redirect_configurable(self):
+        self.authlink.used = timezone.now()
+        self.authlink.save()
+        response = self.client.get(
+            reverse("authlink_use", kwargs={"key": self.authlink.key}),
+            REMOTE_ADDR=self.ipaddress,
+        )
+        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.get("Location"), "/custom/failure/")
         self.assertNotIn(SESSION_KEY, self.client.session)

@@ -100,6 +100,19 @@ Default: 60
 
 Allows increasing or decreasing the period of validity for an authlink.
 
+#### AUTHLINK_NON_SUCCESS_REDIRECT_URL ####
+Default: "/"
+
+Where the user is redirected when consuming an authlink fails (expired, already used,
+or IP address mismatch).
+
+#### AUTHLINK_KEY_LENGTH ####
+Default: 64
+
+Length of generated authlink keys. Note that the shipped migration creates the key
+column as `varchar(64)`, so values above 64 require adding a migration in your own
+project; values at or below 64 work as-is.
+
 
 ### Supported versions
 

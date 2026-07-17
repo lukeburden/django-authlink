@@ -101,6 +101,45 @@ class AdapterTestCase(TestCase):
         request.META = {"REMOTE_ADDR": "127.0.0.1"}
         self.assertEqual(self.adapter.extract_ipaddress(request), "127.0.0.1")
 
+    def test_extract_ipaddress_forwarded_for(self):
+        request = self.factory.get("/some/url")
+        request.user = self.user
+        request.META = {
+            "HTTP_X_FORWARDED_FOR": "177.139.233.133",
+            "REMOTE_ADDR": "10.0.0.1",
+        }
+        self.assertEqual(self.adapter.extract_ipaddress(request), "177.139.233.133")
+
+    def test_extract_ipaddress_forwarded_for_private_leftmost(self):
+        # a leftmost non-routable hop in the chain fails closed outside DEBUG
+        request = self.factory.get("/some/url")
+        request.user = self.user
+        request.META = {
+            "HTTP_X_FORWARDED_FOR": "10.0.0.1, 177.139.233.133",
+            "REMOTE_ADDR": "127.0.0.1",
+        }
+        self.assertIsNone(self.adapter.extract_ipaddress(request))
+
+    @override_settings(DEBUG=True)
+    def test_extract_ipaddress_forwarded_for_private_leftmost_debug(self):
+        request = self.factory.get("/some/url")
+        request.user = self.user
+        request.META = {
+            "HTTP_X_FORWARDED_FOR": "10.0.0.1, 177.139.233.133",
+            "REMOTE_ADDR": "127.0.0.1",
+        }
+        self.assertEqual(self.adapter.extract_ipaddress(request), "10.0.0.1")
+
+    def test_extract_ipaddress_forwarded_for_all_private_falls_back(self):
+        # a wholly non-routable header chain falls back to REMOTE_ADDR
+        request = self.factory.get("/some/url")
+        request.user = self.user
+        request.META = {
+            "HTTP_X_FORWARDED_FOR": "10.0.0.1",
+            "REMOTE_ADDR": "177.139.233.133",
+        }
+        self.assertEqual(self.adapter.extract_ipaddress(request), "177.139.233.133")
+
     # def test_add_message(self):
     #     #def test_add_message(self, request, level, message):
     #     pass
@@ -174,6 +213,15 @@ class AdapterTestCase(TestCase):
         request = self.factory.get("/some/url")
         request.user = self.user
         request.META = {"REMOTE_ADDR": "177.139.233.133"}
+        self.assertTrue(self.adapter.ipaddress_matches(request, self.authlink))
+
+    def test_ipaddress_matches_forwarded_for(self):
+        request = self.factory.get("/some/url")
+        request.user = self.user
+        request.META = {
+            "HTTP_X_FORWARDED_FOR": "177.139.233.133",
+            "REMOTE_ADDR": "10.0.0.1",
+        }
         self.assertTrue(self.adapter.ipaddress_matches(request, self.authlink))
 
     def test_get_full_url(self):
