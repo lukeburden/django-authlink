@@ -3,10 +3,11 @@ from django.core.exceptions import ImproperlyConfigured
 
 from authlink.adapter import get_adapter
 
+
 adapter = get_adapter()
 
 
-class AuthLinkWhitelistMiddleware(object):
+class AuthLinkWhitelistMiddleware:
     """
     Only allow access to whitelisted URLs for sessions that are
     established using the authlink authentication mechanism.

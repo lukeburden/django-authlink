@@ -8,14 +8,14 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.http import HttpResponseForbidden
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
-from ipware.ip import get_ip, get_real_ip
+from ipware import get_client_ip
 
 from .models import AuthLink
 
 
-class DefaultAuthLinkAdapter(object):
+class DefaultAuthLinkAdapter:
     """
     Most application logic should live here, such that it becomes
     easily overridable.
@@ -35,15 +35,15 @@ class DefaultAuthLinkAdapter(object):
         return authlink
 
     def calculate_expiry(self, created):
-        return created + datetime.timedelta(
-            seconds=getattr(settings, "AUTHLINK_TTL_SECONDS", 60)
-        )
+        return created + datetime.timedelta(seconds=getattr(settings, "AUTHLINK_TTL_SECONDS", 60))
 
     def extract_ipaddress(self, request):
-        ipaddress = get_real_ip(request)
-        if not ipaddress and settings.DEBUG:
-            ipaddress = get_ip(request)
-        return ipaddress
+        # only trust non-routable addresses when in DEBUG, mirroring the
+        # behaviour of the legacy ipware get_real_ip/get_ip functions
+        client_ip, is_routable = get_client_ip(request)
+        if is_routable or settings.DEBUG:
+            return client_ip
+        return None
 
     def add_message(self, request, level, message):
         messages.add_message(request, level, message)
@@ -98,7 +98,7 @@ class DefaultAuthLinkAdapter(object):
 
     def get_whitelist_failure_response(self, request):
         return HttpResponseForbidden(
-            _("That URL is not whitelisted for your " "authentication method.")
+            _("That URL is not whitelisted for your authentication method.")
         )
 
 

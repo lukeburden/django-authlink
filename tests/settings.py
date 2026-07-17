@@ -1,10 +1,9 @@
 import os
 import sys
 
-import django
 
 # allow tests to find the `authlink` dir
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..' )
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 
 SECRET_KEY = "sosecreteh"
@@ -49,4 +48,3 @@ MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 )
-

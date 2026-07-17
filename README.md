@@ -2,9 +2,8 @@
 
 [![](https://img.shields.io/pypi/v/django-authlink.svg)](https://pypi.python.org/pypi/django-authlink/)
 [![](https://img.shields.io/badge/license-MIT-blue.svg)](https://pypi.python.org/pypi/django-authlink/)
-[![CircleCI](https://circleci.com/gh/lukeburden/django-authlink.svg?style=svg)](https://circleci.com/gh/lukeburden/django-authlink)
-[![Codecov](https://codecov.io/gh/lukeburden/django-authlink/branch/master/graph/badge.svg)](https://codecov.io/gh/lukeburden/django-authlink)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![Test](https://github.com/lukeburden/django-authlink/actions/workflows/test.yml/badge.svg)](https://github.com/lukeburden/django-authlink/actions/workflows/test.yml)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 
 ## django-authlink
@@ -102,38 +101,33 @@ Default: 60
 Allows increasing or decreasing the period of validity for an authlink.
 
 
+### Supported versions
+
+`django-authlink` supports the Python and Django versions currently supported upstream:
+
+- Python 3.10 through 3.14
+- Django 5.2 (LTS) and 6.0
+
+Django's `main` branch is also tested in CI, but failures there do not fail the build.
+
 ### Contribute
 
-`django-authlink` supports a variety of Python and Django versions. It's best if you test each one of these before committing. Our [Circle CI Integration](https://circleci.com) will test these when you push but knowing before you commit prevents from having to do a lot of extra commits to get the build to pass.
+Tests run via [tox](https://tox.wiki) across all supported Python/Django combinations, and
+[GitHub Actions](https://github.com/lukeburden/django-authlink/actions) runs the same
+environments on push and pull request.
 
-#### Environment Setup
-
-In order to easily test on all these Pythons and run the exact same thing that CI will execute you'll want to setup [pyenv](https://github.com/yyuu/pyenv) and install the Python versions outlined in [tox.ini](tox.ini).
-
-If you are on Mac OS X, it's recommended you use [brew](http://brew.sh/). After installing `brew` run:
+To run the tests locally against the Python versions you have installed:
 
 ```bash
-brew install pyenv pyenv-virtualenv pyenv-virtualenvwrapper
+pip install tox
+tox
 ```
 
-Next, install the various python versions we want to test against and create a virtualenv specifically for `django-authlink`:
+To run a single environment, or lint/format checks with [Ruff](https://docs.astral.sh/ruff/):
 
 ```bash
-pyenv install 3.6.10
-pyenv install 3.7.6
-pyenv install 3.8.1
-pyenv virtualenv 3.8.1 authlink
-pyenv activate authlink
-pip install detox
-pyenv shell authlink 3.6.10 3.7.6
+tox -e py313-dj60
+tox -e ruff
 ```
 
-Now ensure the `authlink` virtualenv is activated, make the other python versions also on our path, and run the tests!
-
-
-```bash
-pyenv shell authlink 3.6.10 3.7.6
-detox
-```
-
-This will execute the test environments in parallel as defined in the `tox.ini`.
+Releases are published to PyPI automatically when a GitHub release is created.
