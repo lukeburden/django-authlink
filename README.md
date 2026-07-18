@@ -77,6 +77,8 @@ When you share an authlink, you are essentially providing unfettered authenticat
 
 Depsite these measures, there is still an undeniable security risk to using this authentication method. You need to weigh the pros and cons for your particular use case and make your own decision there whether this makes sense for your project.
 
+Note that IP addresses are extracted using [django-ipware](https://github.com/un33k/django-ipware), which by default inspects proxy headers such as `X-Forwarded-For` — headers that clients can trivially forge. For the IP matching measure to be meaningful, your reverse proxy or load balancer must strip or overwrite these headers on incoming requests. Alternatively, override `extract_ipaddress()` on a custom adapter and pass ipware's trusted proxy options (`proxy_count`, `proxy_trusted_ips`) or set `IPWARE_META_PRECEDENCE_ORDER` to match your infrastructure.
+
 
 ### Configuration ###
 
