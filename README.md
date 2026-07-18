@@ -77,6 +77,8 @@ When you share an authlink, you are essentially providing unfettered authenticat
 
 Depsite these measures, there is still an undeniable security risk to using this authentication method. You need to weigh the pros and cons for your particular use case and make your own decision there whether this makes sense for your project.
 
+Note that IP addresses are extracted using [django-ipware](https://github.com/un33k/django-ipware), which by default inspects proxy headers such as `X-Forwarded-For` — headers that clients can trivially forge. For the IP matching measure to be meaningful, your reverse proxy or load balancer must strip or overwrite these headers on incoming requests. Alternatively, override `extract_ipaddress()` on a custom adapter and pass ipware's trusted proxy options (`proxy_count`, `proxy_trusted_ips`) or set `IPWARE_META_PRECEDENCE_ORDER` to match your infrastructure.
+
 
 ### Configuration ###
 
@@ -99,6 +101,19 @@ You can subclass the adapter and add any customisations you want to general auth
 Default: 60
 
 Allows increasing or decreasing the period of validity for an authlink.
+
+#### AUTHLINK_NON_SUCCESS_REDIRECT_URL ####
+Default: "/"
+
+Where the user is redirected when consuming an authlink fails (expired, already used,
+or IP address mismatch).
+
+#### AUTHLINK_KEY_LENGTH ####
+Default: 64
+
+Length of generated authlink keys. Note that the shipped migration creates the key
+column as `varchar(64)`, so values above 64 require adding a migration in your own
+project; values at or below 64 work as-is.
 
 
 ### Supported versions

@@ -34,6 +34,19 @@ class APITestCase(TestCase):
         self.assertEqual(authlink.user, self.user)
         self.assertEqual(authlink.ipaddress, self.ipaddress)
         self.assertEqual(AuthLink.objects.count(), 1)
+        self.assertEqual(response["Location"], f"/authlink/{authlink.key}")
+
+    @override_settings(AUTHLINK_URL_TEMPLATE="https://webapp.example.com/authlink/{key}")
+    def test_generate_location_header_uses_template(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("authlink_generate"),
+            data={"url": "/very/specific/url/"},
+            REMOTE_ADDR=self.ipaddress,
+        )
+        self.assertEqual(response.status_code, 201)
+        key = AuthLink.objects.get().key
+        self.assertEqual(response["Location"], f"https://webapp.example.com/authlink/{key}")
 
     def test_generate_invalid_url(self):
         self.assertEqual(AuthLink.objects.count(), 0)

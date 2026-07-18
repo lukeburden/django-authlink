@@ -17,7 +17,9 @@ class AuthLinkView(View):
 
     @transaction.atomic
     def get(self, request, key):
-        authlink = get_object_or_404(AuthLink, key=key)
+        # lock the row so concurrent requests cannot both pass the
+        # is_used check and consume the same link twice
+        authlink = get_object_or_404(AuthLink.objects.select_for_update(), key=key)
         adapter = get_adapter()
         if adapter.is_expired(authlink):
             return self.on_expired(request, authlink)

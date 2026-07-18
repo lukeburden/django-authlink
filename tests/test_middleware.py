@@ -8,6 +8,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
 
+from authlink.adapter import DefaultAuthLinkAdapter
 from authlink.models import AuthLink
 
 from .utils import mock_now
@@ -15,6 +16,11 @@ from .utils import mock_now
 
 TEST_URL = "/very/specific/url/"
 NON_SUCCESS_URL = "http://testserver/"
+
+
+class AllowEverythingAdapter(DefaultAuthLinkAdapter):
+    def in_url_whitelist(self, url):
+        return True
 
 
 @mock_now
@@ -80,6 +86,39 @@ class AuthLinkMiddlewareTestCase(TestCase):
             response.content.decode("utf-8"),
             "That URL is not whitelisted for your authentication method.",
         )
+
+    @override_settings(
+        MIDDLEWARE=settings.MIDDLEWARE + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
+        AUTHLINK_URL_WHITELIST=[],
+    )
+    def test_middleware_ignores_password_sessions(self):
+        """
+        The middleware must only confine sessions established via an
+        authlink; ordinary password logins roam free even when nothing
+        is whitelisted.
+        """
+        self.client.login(username="luke", password="top_secret")
+        response = self.client.get(reverse("authenticated_view"))
+        self.assertEqual(response.status_code, 200)
+
+    @override_settings(
+        MIDDLEWARE=settings.MIDDLEWARE + ("authlink.middleware.AuthLinkWhitelistMiddleware",),
+        AUTHLINK_URL_WHITELIST=[],
+        AUTHLINK_ADAPTER_CLASS="tests.test_middleware.AllowEverythingAdapter",
+    )
+    def test_middleware_uses_configured_adapter(self):
+        """
+        The middleware must resolve AUTHLINK_ADAPTER_CLASS per request
+        rather than binding the adapter at import time.
+        """
+        response = self.client.get(
+            reverse("authlink_use", kwargs={"key": self.authlink.key}),
+            REMOTE_ADDR=self.ipaddress,
+        )
+        self.assertEqual(response.status_code, 301)
+        # nothing is whitelisted, but the custom adapter allows everything
+        response = self.client.get(reverse("authenticated_view"))
+        self.assertEqual(response.status_code, 200)
 
     @override_settings(MIDDLEWARE=("authlink.middleware.AuthLinkWhitelistMiddleware",))
     def test_middleware_after_session_middleware(self):
